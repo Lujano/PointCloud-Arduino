@@ -4,8 +4,8 @@ int tiempo; // 16 bits
 byte phi_180 =228;
 byte phi_0 = 36;
 
-byte theta_90 = 250;
-byte theta_0 = 135;
+byte theta_90 = 245;
+byte theta_0 = 131;
 byte theta_min = 100;  // minimo angulo sin que el motor choque con la base
 
 
@@ -39,35 +39,12 @@ void setup(){
 
 /* MAIN */
 void loop(){
+  
+        delay(250); // delay en milisegundos
+        trigger();
+        tiempo = echo();
+        serial_send();
 
-    for (step2 = theta_0; step2 <=theta_90 ; step2 = step2+2){
-        servo2_send(step2);
-        delay(100); // delay en milisegundos
-        if (i == 0){
-          for (step1=phi_180 ; step1>= phi_0 ; step1 = step1 -2 ){
-                  servo1_send(step1);
-                  delay(250); // delay en milisegundos
-                  trigger();
-                  tiempo = echo();
-                  serial_send();
-          }
-          i = 1;
-        }
-        else{
-           for (step1 = phi_0 ; step1 <= phi_180 ; step1 = step1 +2 ){
-                servo1_send(step1);
-                delay(250); // delay en milisegundos
-                 trigger();
-                tiempo = echo();
-                serial_send();
-           }
-           i = 0;
-        }
-     }
- 
-
-
-  delay(1000);
 }
 
 void trigger(){

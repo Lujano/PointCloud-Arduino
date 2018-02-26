@@ -1,4 +1,6 @@
-int tiempo; // 16 bits
+#include <NewPing.h>
+
+unsigned int tiempo; // 16 bits
 
 // Datos de motores calibrados
 byte phi_180 =228;
@@ -17,7 +19,15 @@ byte Trama_PC[11] = {0xf5, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
 
 bool i; // Direccion
 
+//Set pin numbers
+#define PING_PIN  9
+#define ECHO_PIN  8
+//Maximum distance(cm) the HC-SR04 can detect accurately
+#define MAX_DISTANCE 270
+//Time delay to wait for the receiver to register the echo
+#define DELAY_LOOP  3
 
+NewPing sonar(PING_PIN, ECHO_PIN, MAX_DISTANCE); // NewPing setup of pin and maximum distance.
 
 // Funciones
 void trigger();
@@ -40,25 +50,23 @@ void setup(){
 /* MAIN */
 void loop(){
 
-    for (step2 = theta_0; step2 <=theta_90 ; step2 = step2+2){
+    for (step2 = theta_0; step2 <=theta_90 ; step2 = step2+1){
         servo2_send(step2);
         delay(100); // delay en milisegundos
         if (i == 0){
-          for (step1=phi_180 ; step1>= phi_0 ; step1 = step1 -2 ){
+          for (step1=phi_180 ; step1>= phi_0 ; step1 = step1 -1 ){
                   servo1_send(step1);
                   delay(250); // delay en milisegundos
-                  trigger();
-                  tiempo = echo();
+                  tiempo =  sonar.ping();
                   serial_send();
           }
           i = 1;
         }
         else{
-           for (step1 = phi_0 ; step1 <= phi_180 ; step1 = step1 +2 ){
+           for (step1 = phi_0 ; step1 <= phi_180 ; step1 = step1 +1 ){
                 servo1_send(step1);
                 delay(250); // delay en milisegundos
-                 trigger();
-                tiempo = echo();
+                tiempo =  sonar.ping();
                 serial_send();
            }
            i = 0;
@@ -114,4 +122,12 @@ void servo2_send(byte posicion){ //el servo que controla theta (respecto al eje 
     Trama_Motores [1] = direccion;
     Trama_Motores [2] = posicion;
     Serial3.write(Trama_Motores, 3);
-    }
+    }void setup() {
+  // put your setup code here, to run once:
+
+}
+
+void loop() {
+  // put your main code here, to run repeatedly:
+
+}
