@@ -26,6 +26,6 @@ float distancia(int n)
     suma=suma+analogRead(A0);
   }  
   float adc=suma/n;
-  float distancia_cm = 17569.7 * pow(adc, -1.2062);
+  float distancia_cm = adc*5.0/1024;// 17569.7 * pow(adc, -1.2062);
   return(distancia_cm);
 }
