@@ -1,24 +1,36 @@
 #include <ESP8266WiFi.h>
-
 #include <WiFiClient.h>
 #include <ESP8266WebServer.h>
 #include <ESP8266mDNS.h>
- 
+
 const char* ssid = "LINK-NET-U31";
 const char* password = "narbel11157444";
 
 ESP8266WebServer server(80);
 
-const int led = 13;
+// Ver la direccion ip a la que se conecta y mandar las peticiones alli
 
 void handleRoot() {
-  digitalWrite(led, 1);
-  server.send(200, "text/plain", "hello from esp8266!");
-  digitalWrite(led, 0);
+
+  String message = "Number of args received:" ;
+message += server.args();            //Get number of parameters
+message += "\n";                            //Add a new line
+
+for (int i = 0; i < server.args(); i++) {
+
+  message += "Arg n" + (String)i + " –> ";   //Include the current iteration value
+  message += server.argName(i) + ": ";     //Get the name of the parameter
+  message += server.arg(i) + "\n";              //Get the value of the parameter
+
+} 
+
+server.send(200, "text/plain", message);       //Response to the HTTP request
+
+
 }
+  
 
 void handleNotFound(){
-  digitalWrite(led, 1);
   String message = "File Not Found\n\n";
   message += "URI: ";
   message += server.uri();
@@ -31,12 +43,9 @@ void handleNotFound(){
     message += " " + server.argName(i) + ": " + server.arg(i) + "\n";
   }
   server.send(404, "text/plain", message);
-  digitalWrite(led, 0);
 }
 
 void setup(void){
-  pinMode(led, OUTPUT);
-  digitalWrite(led, 0);
   Serial.begin(115200);
   WiFi.mode(WIFI_STA);
   WiFi.begin(ssid, password);
@@ -57,7 +66,7 @@ void setup(void){
     Serial.println("MDNS responder started");
   }
 
-  server.on("/", handleRoot);
+  server.on("/Server", handleRoot);
 
   server.on("/inline", [](){
     server.send(200, "text/plain", "this works as well");
