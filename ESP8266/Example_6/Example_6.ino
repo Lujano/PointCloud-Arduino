@@ -83,6 +83,7 @@ void loop() {
       http.end();   //Close connection
    
         }
+        delay(1000);
     }
     // Se conecto con servidor cambiar a modo FREERUN e Iniciar servidor
     server.begin();
@@ -127,16 +128,18 @@ void handleRoot() {
   step2 = server.arg(1).toInt() & 0xff;
   String command = server.arg(2);
   if (command == "OK"){
+    server.send(200, "text/plain", "OK");       //Response to the HTTP request
     Trama_FREERUN[3] =  step1;
     Trama_FREERUN[4] =  step2;
-    Serial.write(Trama_FREERUN, 5);
-    server.send(200, "text/plain", "OK");       //Response to the HTTP request
+    
+     Serial.write(Trama_FREERUN, 5);
     }
   else if (command == "POINTCLOUD"){
     phi_start = server.arg(0).toInt() & 0xff;
     phi_end = server.arg(1).toInt() & 0xff;
     theta_start = server.arg(3).toInt() & 0xff;
     theta_end = server.arg(4).toInt() & 0xff;
+    server.send(200, "text/plain", "POINTCLOUD");       //Response to the HTTP request
 
     Trama_POINTCLOUD[3] =  phi_start;
     Trama_POINTCLOUD[4] =  phi_end;
@@ -144,7 +147,7 @@ void handleRoot() {
     Trama_POINTCLOUD[6] =  theta_end;
     Serial.write(Trama_POINTCLOUD, 7);
     estado = POINTCLOUD;
-    server.send(200, "text/plain", "POINTCLOUD");       //Response to the HTTP request
+    
     server.stop(); // Detener servidor, empezar cliente
   }
 
