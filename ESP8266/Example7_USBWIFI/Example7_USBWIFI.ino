@@ -3,9 +3,11 @@
 #include <ESP8266HTTPClient.h>
 #include <ESP8266WebServer.h>
 #include <ESP8266mDNS.h>
-const char* MAC = "60-01-94-21-D1-FF";
-const char* ssid = "PointCloudLM";
-const char* password = "4B6C476F80";
+// Datos del dispositivo
+const char* MAC = "60-01-94-21-D1-FF"; // Mac del esp8266
+const char* IP = "192.168.1.150"; // IP reservada en cite
+const char* ssid = "CITE";
+const char* password = "123456cite";
 String server_ip = "192.168.1.101";
 String server_port = "8000";
 String url_client = "/ESP8266";

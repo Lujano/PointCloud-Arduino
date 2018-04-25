@@ -1,3 +1,5 @@
+
+
 #include <NewPing.h>
 
 unsigned int tiempo; // 16 bits
@@ -16,8 +18,6 @@ byte step2; // Paso del motor 2
 
 byte Trama_Motores[3] = {0xff, 0x00, 0x00};
 byte Trama_PC[11] = {0xf5, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}; // Canales
-
-bool i; // Direccion
 
 //Set pin numbers
 #define PING_PIN  9
@@ -38,12 +38,11 @@ void servo2_send(byte posicion);
 
 // Configuracion inicial
 void setup(){
-  Serial.begin(115200);
-  Serial3.begin(9600);
+  Serial.begin(9600); // Velocidad maxima permitidad por el  driver de los motores
   pinMode(9, OUTPUT); /*activación del pin 9 como salida: trigger para el pulso ultrasónico*/
   pinMode(8, INPUT); /*activación del pin 8 como entrada: tiempo del echo del ultrasonido*/
 
-  i = 0; // sentido de giro por defatult
+  dir = 0; // sentido de giro por defatult
 }
 
 
@@ -53,14 +52,14 @@ void loop(){
     for (step2 = theta_0; step2 <=theta_90 ; step2 = step2+3){
         servo2_send(step2);
         delay(100); // delay en milisegundos
-        if (i == 0){
+        if (dir == 0){
           for (step1=phi_180 ; step1>= phi_0 ; step1 = step1 -3 ){
                   servo1_send(step1);
                   delay(250); // delay en milisegundos
                   tiempo =  sonar.ping();
                   serial_send();
           }
-          i = 1;
+          dir = 1;
         }
         else{
            for (step1 = phi_0 ; step1 <= phi_180 ; step1 = step1 +3 ){
@@ -69,7 +68,7 @@ void loop(){
                 tiempo =  sonar.ping();
                 serial_send();
            }
-           i = 0;
+           dir = 0;
         }
      }
  
@@ -114,12 +113,12 @@ void servo1_send(byte posicion){// el servo que controla phi (plano xy)
     byte direccion = 1 ; // conector del driver al que esta conectado el motor
     Trama_Motores [1] = direccion;
     Trama_Motores [2] = posicion;
-    Serial3.write(Trama_Motores, 3);
+    Serial.write(Trama_Motores, 3);
  }
   
 void servo2_send(byte posicion){ //el servo que controla theta (respecto al eje z)
     byte direccion = 2 ;  // conector del driver al que esta conectado el motor
     Trama_Motores [1] = direccion;
     Trama_Motores [2] = posicion;
-    Serial3.write(Trama_Motores, 3);
+    Serial.write(Trama_Motores, 3);
     }
